@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>911777939876-1opv2fkbk9k5rcqbholgg8oae6qph3ld.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.911777939876-1opv2fkbk9k5rcqbholgg8oae6qph3ld</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>911777939876-58ddvglp7e04dlbgfesq1nr53j27jhpk.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC26XRmabRdWD_M3McO5FMrBTAPHmCR65g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>911777939876</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.hands2gether.org</string>
+	<key>PROJECT_ID</key>
+	<string>hands2gether-c49c0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hands2gether-c49c0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:911777939876:ios:0d911416cd5aec39cd4131</string>
+	<key>DATABASE_URL</key>
+	<string>https://hands2gether-c49c0-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
