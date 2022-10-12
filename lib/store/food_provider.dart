@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:core';
@@ -15,17 +17,10 @@ class FoodProvider with ChangeNotifier {
     _foodListings.clear();
     CollectionReference foods = firestore.collection('food');
     print("::FoodProvider::fetchFoodFromFirebase::");
-
     foods.orderBy("foodType").limit(6).get().then((event) {
       for (var doc in event.docs) {
-        print("${doc.id} --> ${doc.data()}");
-        NewFoodModel foodItem = NewFoodModel(
-          description: doc["description"] ?? null,
-          foodType: doc["foodType"] ?? null,
-          images: doc["images"] ?? null,
-          quantity: doc["quantity"] ?? null,
-          title: doc["title"] ?? null,
-        );
+        String jsonStr = jsonEncode(doc.data());
+        NewFoodModel foodItem = NewFoodModel.fromJson(jsonStr);
         _foodListings.add(foodItem);
       }
       notifyListeners();

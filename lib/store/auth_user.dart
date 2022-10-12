@@ -41,15 +41,37 @@ class AuthenticatedUser with ChangeNotifier {
         country: "IN",
         name: authenticatedUser.displayName ?? "Guest",
         email: authenticatedUser.email,
-        geolocation: "IN",
-        locality: "Triplicane",
+        geolocation: " ",
+        locality: " ",
         mobile: authenticatedUser.phoneNumber,
-        state: "TN",
+        state: "",
         uid: authenticatedUser.uid,
-        signedup: "2021-01-01",
-        zipcode: "600005");
+        signedup: "",
+        zipcode: "");
 
     print(userData);
     notifyListeners();
   }
 }
+
+
+ /* NewFoodModel foodItem = NewFoodModel(
+          country: doc["country"] ?? null,
+          createdDate: doc["createdDate"] ?? null,
+          createdEpoch: doc["createdEpoch"] ?? null,
+          email: doc["email"] ?? null,
+          locality: doc["locality"] ?? null,
+          mobile: doc["mobile"] ?? null,
+          state: doc["state"] ?? null,
+          status: doc["status"] ?? 0,
+          uid: doc["uid"] ?? null,
+          description: doc["description"] ?? null,
+          userName: doc["userName"] ?? null,
+          validity: doc["validity"] ?? 0,
+          zipcode: doc["zipcode"] ?? null,
+          city: doc["city"] ?? null,
+          foodType: doc["foodType"] ?? 0,
+          images: doc["images"] ?? null,
+          quantity: doc["quantity"] ?? 0,
+          title: doc["title"] ?? null,
+        ); */
