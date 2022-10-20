@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hands2gether/firebase_options.dart';
@@ -12,7 +14,7 @@ import '../store/auth_user.dart';
 
 String getUserName(BuildContext context) {
   CurrentUserModel user = context.watch<AuthenticatedUser>().currentUser;
-  var username = user.name;
+  String? username = user.name;
   return username.toString();
 }
 
@@ -24,15 +26,22 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  late FirebaseAuth user;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Widget build(BuildContext context) {
     return Consumer<AuthenticatedUser>(builder: (context, auth, child) {
+      CurrentUserModel user = context.watch<AuthenticatedUser>().currentUser;
+      final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+      final emailController = TextEditingController();
+      final passwordController = TextEditingController();
+
+      if (user.uid != '') {
+        Future.delayed(Duration(seconds: 0))
+            .then((value) => Navigator.pushReplacementNamed(context, '/'));
+      }
+      if (user.uid != '' && user.active == null) {
+        Future.delayed(Duration(seconds: 0)).then(
+            (value) => Navigator.pushReplacementNamed(context, '/profile'));
+      }
+
       return Scaffold(
           backgroundColor: Colors.lightBlue[100],
           /* appBar: AppBar(
@@ -57,10 +66,9 @@ class _SignupPageState extends State<SignupPage> {
                 child: Container(
                   margin: EdgeInsets.fromLTRB(0, 80, 0, 0),
                   padding: EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
+                  child: Form(
+                      key: _formKey,
+                      child: Container(
                         margin: EdgeInsets.only(left: 35, right: 35),
                         child: Column(
                           children: [
@@ -72,22 +80,39 @@ class _SignupPageState extends State<SignupPage> {
                               height: 30,
                             ),
                             TextField(
-                              style: TextStyle(color: Colors.black),
+                              controller: emailController,
+                              style: TextStyle(
+                                color: Colors.black,
+                                height: 1,
+                              ),
                               decoration: InputDecoration(
-                                  fillColor: Colors.grey.shade100,
-                                  filled: true,
-                                  hintText: "Email",
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color:
+                                            Color.fromARGB(255, 216, 216, 216)),
+                                  ),
+                                  prefixIcon: Icon(Icons.mail),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
-                                  )),
+                                  ),
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(0),
+                                  hintStyle: TextStyle(color: Colors.grey[800]),
+                                  hintText: "Email",
+                                  fillColor: Colors.white),
                             ),
                             SizedBox(
-                              height: 30,
+                              height: 10,
                             ),
                             TextField(
+                              controller: passwordController,
                               style: TextStyle(),
                               obscureText: true,
                               decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(5),
+                                  prefixIcon: Icon(Icons.password_outlined),
                                   fillColor: Colors.grey.shade100,
                                   filled: true,
                                   hintText: "Password",
@@ -96,7 +121,7 @@ class _SignupPageState extends State<SignupPage> {
                                   )),
                             ),
                             SizedBox(
-                              height: 40,
+                              height: 20,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,11 +138,10 @@ class _SignupPageState extends State<SignupPage> {
                                   child: IconButton(
                                       color: Colors.white,
                                       onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    IndexPage()));
+                                        signinWithEmailPassword(
+                                            emailController.text,
+                                            passwordController.text,
+                                            context);
                                       },
                                       icon: Icon(
                                         Icons.arrow_forward,
@@ -168,7 +192,29 @@ class _SignupPageState extends State<SignupPage> {
                                         FontAwesomeIcons.facebook,
                                         color: Colors.white,
                                       ),
-                                      Text("Signin With Google",
+                                      Text("Signin With Facebook",
+                                          style:
+                                              TextStyle(color: Colors.white)),
+                                    ],
+                                  ),
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      backgroundColor: Colors.indigo[600],
+                                      textStyle:
+                                          TextStyle(color: Colors.white)),
+                                  onPressed: () {
+                                    print(auth.toString());
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      FaIcon(
+                                        FontAwesomeIcons.facebook,
+                                        color: Colors.white,
+                                      ),
+                                      Text("user",
                                           style:
                                               TextStyle(color: Colors.white)),
                                     ],
@@ -178,14 +224,29 @@ class _SignupPageState extends State<SignupPage> {
                             )
                           ],
                         ),
-                      )
-                    ],
-                  ),
+                      )),
                 ),
               ),
             ],
           ));
     });
+  }
+}
+
+void signinWithEmailPassword(
+    String emailAddress, String password, BuildContext context) async {
+  try {
+    print("${emailAddress} ${password}");
+    final credential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: emailAddress, password: password);
+    User? autenticatedUser = credential.user;
+    context.read<AuthenticatedUser>().updateLogin(autenticatedUser!);
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      print('No user found for that email.');
+    } else if (e.code == 'wrong-password') {
+      print('Wrong password provided for that user.');
+    }
   }
 }
 

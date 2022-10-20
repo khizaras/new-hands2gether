@@ -2,7 +2,9 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:hands2gether/models/new_food_model.dart';
+import 'package:hands2gether/pages/food_listings.dart';
 import 'package:hands2gether/pages/loginPage.dart';
+import 'package:hands2gether/pages/profile.dart';
 import 'package:hands2gether/store/food_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/src/rendering/box.dart';
@@ -47,7 +49,7 @@ class _IndexPageState extends State<IndexPage> {
           leading: Builder(
               builder: (context) => IconButton(
                     onPressed: () => Scaffold.of(context).openDrawer(),
-                    icon: Icon(Icons.menu),
+                    icon: Icon(Icons.sort),
                     color: Colors.indigo[900],
                   )),
           centerTitle: true,
@@ -58,13 +60,23 @@ class _IndexPageState extends State<IndexPage> {
           actions: [
             Row(
               children: [
-                IconButton(
-                    color: Colors.indigo[900],
-                    onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
-                        ),
-                    icon: Icon(Icons.person_outline_sharp)),
+                user.uid == ""
+                    ? IconButton(
+                        color: Colors.indigo[900],
+                        onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignupPage()),
+                            ),
+                        icon: Icon(Icons.person_outline_sharp))
+                    : Container(),
+                user.uid != ""
+                    ? IconButton(
+                        color: Colors.indigo[900],
+                        onPressed: () =>
+                            {context.read<AuthenticatedUser>().logoutUser()},
+                        icon: Icon(Icons.logout))
+                    : Container(),
               ],
             ),
           ]),
@@ -99,10 +111,19 @@ class _IndexPageState extends State<IndexPage> {
                                 ),
                                 onPressed: () {},
                               ))
-                          : CircleAvatar(
-                              backgroundColor: Colors.indigo[900],
-                              backgroundImage:
-                                  NetworkImage(user.photo.toString()),
+                          : InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            UpdateProfilePage()));
+                              },
+                              child: CircleAvatar(
+                                backgroundColor: Colors.indigo[900],
+                                backgroundImage:
+                                    NetworkImage(user.photo.toString()),
+                              ),
                             ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
@@ -135,17 +156,29 @@ class _IndexPageState extends State<IndexPage> {
 
             //searchbar
             Container(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
               child: TextField(
-                style: TextStyle(height: 1),
+                style: TextStyle(
+                  height: 1,
+                ),
                 decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          width: 1, color: Color.fromARGB(255, 216, 216, 216)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          width: 1, color: Color.fromARGB(255, 25, 32, 157)),
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     filled: true,
+                    contentPadding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                     hintStyle: TextStyle(color: Colors.grey[800]),
-                    hintText: "Search here",
-                    fillColor: Colors.white70),
+                    hintText: "Search Food, Cloths & Education . . .",
+                    fillColor: Colors.white),
               ),
             ),
 
@@ -239,7 +272,14 @@ class _IndexPageState extends State<IndexPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("Recent Listings"),
-                      TextButton(onPressed: () {}, child: Text("Show All")),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FoodListingsPage()));
+                          },
+                          child: Text("Show All")),
                     ],
                   ),
                   RecentListings(context)
@@ -273,48 +313,71 @@ Widget RecentListings(BuildContext context) {
       NewFoodModel food = foods[i];
       String image = getImage(food.images)[0];
 
-      return Card(
-        elevation: 1,
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: Image(
-                  image: NetworkImage(image),
-                  width: double.infinity,
-                  height: 110,
-                  fit: BoxFit.cover,
+      return InkWell(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => FoodListingsPage()));
+        },
+        child: Card(
+          elevation: 1,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(1.0),
+                  child: Image(
+                    image: NetworkImage(image),
+                    width: double.infinity,
+                    height: 110,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
-                  child: Text(food.title.toString())),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
-                  child: Text(
-                    food.description.toString(),
-                    maxLines: 2,
-                    style: TextStyle(fontSize: 10),
-                  )),
-              Padding(
-                padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.pin_drop,
-                      size: 10,
-                    ),
-                    Text(
-                      "Triplicane",
+                Padding(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
+                    child: Text(food.title.toString())),
+                Padding(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
+                    child: Text(
+                      food.description.toString(),
+                      maxLines: 2,
                       style: TextStyle(fontSize: 10),
-                    )
-                  ],
+                    )),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.pin_drop,
+                            size: 10,
+                          ),
+                          Text(
+                            "Triplicane",
+                            style: TextStyle(fontSize: 10),
+                          )
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.people,
+                            size: 10,
+                          ),
+                          Text(
+                            food.quantity.toString(),
+                            style: TextStyle(fontSize: 10),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ]),
+              ]),
+        ),
       );
     },
   );
