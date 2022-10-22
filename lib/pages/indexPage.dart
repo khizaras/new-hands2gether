@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:hands2gether/models/new_food_model.dart';
+import 'package:hands2gether/pages/food_detail_view.dart';
 import 'package:hands2gether/pages/food_listings.dart';
 import 'package:hands2gether/pages/loginPage.dart';
 import 'package:hands2gether/pages/profile.dart';
@@ -315,8 +316,10 @@ Widget RecentListings(BuildContext context) {
 
       return InkWell(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => FoodListingsPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FoodDetailView(food_: food)));
         },
         child: Card(
           elevation: 1,
