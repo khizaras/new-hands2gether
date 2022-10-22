@@ -12,12 +12,31 @@ class FoodProvider with ChangeNotifier {
 
   final List<NewFoodModel> _foodListings = [];
   get foodListings => _foodListings;
+  get resetFilter => fetchFoodFromFirebase();
 
   void fetchFoodFromFirebase() {
     _foodListings.clear();
     CollectionReference foods = firestore.collection('food');
     print("::FoodProvider::fetchFoodFromFirebase::");
-    foods.orderBy("foodType").limit(6).get().then((event) {
+    foods.orderBy("foodType").limit(12).get().then((event) {
+      for (var doc in event.docs) {
+        String jsonStr = jsonEncode(doc.data());
+        NewFoodModel foodItem = NewFoodModel.fromJson(jsonStr);
+        _foodListings.add(foodItem);
+      }
+      notifyListeners();
+    });
+  }
+
+  void filterFood(String? city) {
+    _foodListings.clear();
+    CollectionReference foods = firestore.collection('food');
+    print("::FoodProvider::fetchFoodFromFirebase::");
+    foods
+        .where("city", isEqualTo: city.toString())
+        .orderBy("foodType")
+        .get()
+        .then((event) {
       for (var doc in event.docs) {
         String jsonStr = jsonEncode(doc.data());
         NewFoodModel foodItem = NewFoodModel.fromJson(jsonStr);
