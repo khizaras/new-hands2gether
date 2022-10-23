@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:hands2gether/models/current_location_model.dart';
 
 class LocationProvider with ChangeNotifier {
-  late CurrentLocation _currentLocation;
+  CurrentLocation _currentLocation = CurrentLocation(permission: false);
 
   bool _isPermissionAccquired = false;
   get isPermissionAccquired => _isPermissionAccquired;
@@ -13,8 +13,8 @@ class LocationProvider with ChangeNotifier {
   void getLocation() {
     print("LocationProvider::Checking Loaction access::");
     _handleLocationPermission().then((accquired) {
-      print("LocationProvider::Loaction access granted");
       if (accquired) {
+        print("LocationProvider::Loaction access granted");
         getAddress();
       }
     });
@@ -54,6 +54,7 @@ class LocationProvider with ChangeNotifier {
           .then((List<Placemark> placemarks) {
         Placemark fp = placemarks[0];
         CurrentLocation cl = CurrentLocation(
+            permission: true,
             administrativeArea: fp.administrativeArea,
             country: fp.country,
             isoCountryCode: fp.isoCountryCode,
@@ -65,8 +66,12 @@ class LocationProvider with ChangeNotifier {
         print("LocationProvider::${cl}");
         notifyListeners();
       }).catchError((e) {
+        print("LocationProvider::placemarkFromCoordinates::${e}");
         debugPrint(e);
       });
+    }).catchError((ge) {
+      print("LocationProvider::Geolocator::${ge}");
+      debugPrint(ge);
     });
   }
 }

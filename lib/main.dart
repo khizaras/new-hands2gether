@@ -65,6 +65,8 @@ class MyApp extends StatelessWidget {
         child: Builder(builder: (BuildContext context) {
           context.read<FoodProvider>().fetchFoodFromFirebase();
           context.read<LocationProvider>().getLocation();
+          bool permissionAccquired =
+              context.read<LocationProvider>().isPermissionAccquired;
 
           return MaterialApp(
               title: 'Flutter Demo',

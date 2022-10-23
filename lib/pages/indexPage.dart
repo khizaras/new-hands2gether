@@ -1,5 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hands2gether/models/current_location_model.dart';
 import 'package:hands2gether/models/new_food_model.dart';
 import 'package:hands2gether/pages/food_detail_view.dart';
@@ -9,7 +13,6 @@ import 'package:hands2gether/pages/profile.dart';
 import 'package:hands2gether/store/food_provider.dart';
 import 'package:hands2gether/store/location_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:geolocator/geolocator.dart';
 
 import '../models/current_user_model.dart';
 import '../store/auth_user.dart';
@@ -29,12 +32,6 @@ class _IndexPageState extends State<IndexPage> {
     Color primary = Colors.indigo;
     CurrentUserModel user = context.watch<AuthenticatedUser>().currentUser;
     CurrentLocation curloc = context.watch<LocationProvider>().currentLocation;
-
-/*     Future<Position> position = _determinePosition();
-    position.then((value) {
-      print(value);
-      print(value.toJson());
-    }); */
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -42,11 +39,11 @@ class _IndexPageState extends State<IndexPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              height: height * 1,
-              padding: EdgeInsets.fromLTRB(10, 60, 10, 10),
+              padding: EdgeInsets.fromLTRB(10, 70, 10, 10),
               child: Image.asset(
                 'assets/images/logo.png',
-                height: 40,
+                height: 60,
+                fit: BoxFit.fitHeight,
               ),
             )
           ],
@@ -57,30 +54,34 @@ class _IndexPageState extends State<IndexPage> {
           backgroundColor: Colors.white,
           leading: Builder(
               builder: (context) => IconButton(
+                    iconSize: 25,
                     onPressed: () => Scaffold.of(context).openDrawer(),
                     icon: Icon(Icons.sort),
                     color: Colors.indigo[900],
                   )),
           centerTitle: false,
-          title: Row(
-            children: [
-              Icon(
-                Icons.pin_drop,
-                color: Colors.indigo,
-                size: 18,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Text(
-                  "${curloc.administrativeArea},${curloc.country}",
-                  style: TextStyle(
+          title: curloc.permission
+              ? Row(
+                  children: [
+                    Icon(
+                      Icons.pin_drop,
                       color: Colors.indigo,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300),
-                ),
-              ),
-            ],
-          ),
+                      size: 18,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: Text(
+                        "${curloc.administrativeArea},${curloc.country}",
+                        style: TextStyle(
+                            color: Colors.indigo,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300),
+                      ),
+                    ),
+                  ],
+                )
+              : null,
+
           /*title: Image.asset(
             'assets/images/logo.png',
             height: 40,
@@ -213,7 +214,7 @@ class _IndexPageState extends State<IndexPage> {
             // new categ
             Container(
               alignment: Alignment.topLeft,
-              margin: EdgeInsets.fromLTRB(15, 20, 10, 10),
+              margin: EdgeInsets.fromLTRB(15, 30, 10, 10),
               height: 50,
               child: ListView(
                 shrinkWrap: true,
@@ -221,13 +222,65 @@ class _IndexPageState extends State<IndexPage> {
                 physics: ScrollPhysics(),
                 children: [
                   RenderCategory(
-                      context, "Food", "assets/images/food-icon.png"),
+                    context,
+                    "Food",
+                    FaIcon(
+                      FontAwesomeIcons.bowlRice,
+                      size: 40,
+                      color: Colors.indigo[400],
+                    ),
+                    () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FoodListingsPage()));
+                    },
+                  ),
                   RenderCategory(
-                      context, "Cloths", "assets/images/cloth-icon.png"),
+                    context,
+                    "Cloths",
+                    FaIcon(
+                      FontAwesomeIcons.shirt,
+                      size: 40,
+                      color: Colors.indigo[400],
+                    ),
+                    () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FoodListingsPage()));
+                    },
+                  ),
                   RenderCategory(
-                      context, "Books", "assets/images/books-icon.png"),
+                    context,
+                    "Books",
+                    FaIcon(
+                      FontAwesomeIcons.book,
+                      size: 40,
+                      color: Colors.indigo[400],
+                    ),
+                    () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FoodListingsPage()));
+                    },
+                  ),
                   RenderCategory(
-                      context, "Food", "assets/images/food-icon.png"),
+                    context,
+                    "Education",
+                    FaIcon(
+                      FontAwesomeIcons.child,
+                      size: 40,
+                      color: Colors.indigo[400],
+                    ),
+                    () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FoodListingsPage()));
+                    },
+                  ),
                 ],
               ),
             ),
@@ -237,7 +290,7 @@ class _IndexPageState extends State<IndexPage> {
               margin: EdgeInsets.all(15),
               height: height * 0.15,
               decoration: BoxDecoration(
-                  color: Colors.indigo[50],
+                  color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   boxShadow: [
                     BoxShadow(
@@ -245,6 +298,44 @@ class _IndexPageState extends State<IndexPage> {
                       blurRadius: 1.0,
                     ),
                   ]),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            child: Text(
+                              "Join your Hands",
+                              style: TextStyle(
+                                  color: Colors.indigo,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w300),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            child: Text(
+                              "To help the needy one!",
+                              style: TextStyle(
+                                  color: Colors.indigo,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          )
+                        ],
+                      )),
+                  Image.asset(
+                    'assets/images/6222537.jpg',
+                    height: 120,
+                    fit: BoxFit.cover,
+                  )
+                ],
+              ),
             ),
 
             Container(
@@ -368,40 +459,37 @@ Widget RecentListings(BuildContext context) {
   );
 }
 
-Widget RenderCategory(
-    BuildContext context, String catName, String imageLocation) {
-  return Container(
-    margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-    width: 75,
-    decoration: BoxDecoration(
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey,
-          blurRadius: 1.0,
-        ),
-      ],
-      border: Border.all(color: Colors.white12),
-      color: Colors.white,
-      borderRadius: BorderRadius.all(Radius.circular(10)),
-    ),
-    child: Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.topCenter,
-      children: [
-        Positioned(
-            top: -10,
-            child: Image.asset(
-              imageLocation,
-              height: 40,
-              fit: BoxFit.fitHeight,
-            )),
-        Positioned(
-            top: 30,
-            child: Text(
-              catName,
-              style: TextStyle(color: Colors.indigo),
-            ))
-      ],
+Widget RenderCategory(BuildContext context, String catName, Widget cicon,
+    void Function()? onTap) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+      width: 75,
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 1.0,
+          ),
+        ],
+        border: Border.all(color: Colors.white12),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          Positioned(top: -15, child: cicon),
+          Positioned(
+              top: 30,
+              child: Text(
+                catName,
+                style: TextStyle(color: Colors.indigo),
+              ))
+        ],
+      ),
     ),
   );
 }
