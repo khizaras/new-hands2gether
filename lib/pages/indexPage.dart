@@ -1,14 +1,15 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hands2gether/models/current_location_model.dart';
 import 'package:hands2gether/models/new_food_model.dart';
 import 'package:hands2gether/pages/food_detail_view.dart';
 import 'package:hands2gether/pages/food_listings.dart';
 import 'package:hands2gether/pages/loginPage.dart';
 import 'package:hands2gether/pages/profile.dart';
 import 'package:hands2gether/store/food_provider.dart';
+import 'package:hands2gether/store/location_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/src/rendering/box.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../models/current_user_model.dart';
 import '../store/auth_user.dart';
@@ -27,6 +28,13 @@ class _IndexPageState extends State<IndexPage> {
     double height = MediaQuery.of(context).size.height;
     Color primary = Colors.indigo;
     CurrentUserModel user = context.watch<AuthenticatedUser>().currentUser;
+    CurrentLocation curloc = context.watch<LocationProvider>().currentLocation;
+
+/*     Future<Position> position = _determinePosition();
+    position.then((value) {
+      print(value);
+      print(value.toJson());
+    }); */
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -53,7 +61,26 @@ class _IndexPageState extends State<IndexPage> {
                     icon: Icon(Icons.sort),
                     color: Colors.indigo[900],
                   )),
-          centerTitle: true,
+          centerTitle: false,
+          title: Row(
+            children: [
+              Icon(
+                Icons.pin_drop,
+                color: Colors.indigo,
+                size: 18,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Text(
+                  "${curloc.administrativeArea},${curloc.country}",
+                  style: TextStyle(
+                      color: Colors.indigo,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ],
+          ),
           /*title: Image.asset(
             'assets/images/logo.png',
             height: 40,
@@ -183,86 +210,41 @@ class _IndexPageState extends State<IndexPage> {
               ),
             ),
 
-            // categories section
+            // new categ
             Container(
-              height: 100,
-              child: CustomScrollView(
-                scrollDirection: Axis.horizontal,
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.fromLTRB(15, 20, 10, 10),
+              height: 50,
+              child: ListView(
                 shrinkWrap: true,
-                slivers: <Widget>[
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate(
-                        <Widget>[
-                          Card(
-                            child: Container(
-                              width: width / 4,
-                              child: InkWell(
-                                onTap: () {
-                                  context.read<FoodProvider>().addFood();
-                                },
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.food_bank,
-                                      color: primary,
-                                    ),
-                                    Text(
-                                      "Food",
-                                      style: TextStyle(color: primary),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Card(
-                            child: Container(
-                              width: width / 4,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add_location_rounded,
-                                    color: primary,
-                                  ),
-                                  Text(
-                                    "Cloths",
-                                    style: TextStyle(color: primary),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Card(
-                            child: Container(
-                              width: width / 4,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.book,
-                                    color: primary,
-                                  ),
-                                  Text(
-                                    "Education",
-                                    style: TextStyle(color: primary),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                scrollDirection: Axis.horizontal,
+                physics: ScrollPhysics(),
+                children: [
+                  RenderCategory(
+                      context, "Food", "assets/images/food-icon.png"),
+                  RenderCategory(
+                      context, "Cloths", "assets/images/cloth-icon.png"),
+                  RenderCategory(
+                      context, "Books", "assets/images/books-icon.png"),
+                  RenderCategory(
+                      context, "Food", "assets/images/food-icon.png"),
                 ],
               ),
+            ),
+
+            //banner
+            Container(
+              margin: EdgeInsets.all(15),
+              height: height * 0.15,
+              decoration: BoxDecoration(
+                  color: Colors.indigo[50],
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromRGBO(63, 81, 181, 1),
+                      blurRadius: 1.0,
+                    ),
+                  ]),
             ),
 
             Container(
@@ -385,3 +367,127 @@ Widget RecentListings(BuildContext context) {
     },
   );
 }
+
+Widget RenderCategory(
+    BuildContext context, String catName, String imageLocation) {
+  return Container(
+    margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+    width: 75,
+    decoration: BoxDecoration(
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey,
+          blurRadius: 1.0,
+        ),
+      ],
+      border: Border.all(color: Colors.white12),
+      color: Colors.white,
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+    ),
+    child: Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        Positioned(
+            top: -10,
+            child: Image.asset(
+              imageLocation,
+              height: 40,
+              fit: BoxFit.fitHeight,
+            )),
+        Positioned(
+            top: 30,
+            child: Text(
+              catName,
+              style: TextStyle(color: Colors.indigo),
+            ))
+      ],
+    ),
+  );
+}
+
+
+// card category
+
+// categories section
+/* Container(
+              height: 100,
+              child: CustomScrollView(
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                slivers: <Widget>[
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate(
+                        <Widget>[
+                          Card(
+                            child: Container(
+                              width: width / 4,
+                              child: InkWell(
+                                onTap: () {
+                                  context.read<FoodProvider>().addFood();
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.food_bank,
+                                      color: primary,
+                                    ),
+                                    Text(
+                                      "Food",
+                                      style: TextStyle(color: primary),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Card(
+                            child: Container(
+                              width: width / 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add_location_rounded,
+                                    color: primary,
+                                  ),
+                                  Text(
+                                    "Cloths",
+                                    style: TextStyle(color: primary),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          Card(
+                            child: Container(
+                              width: width / 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.book,
+                                    color: primary,
+                                  ),
+                                  Text(
+                                    "Education",
+                                    style: TextStyle(color: primary),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+ */
