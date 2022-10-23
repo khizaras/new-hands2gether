@@ -412,12 +412,17 @@ Widget RecentListings(BuildContext context) {
                 ),
                 Padding(
                     padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
-                    child: Text(food.title.toString())),
+                    child: Text(
+                      food.title.toString(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )),
                 Padding(
                     padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
                     child: Text(
                       food.description.toString(),
-                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: TextStyle(fontSize: 10),
                     )),
                 Padding(
