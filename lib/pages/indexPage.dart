@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hands2gether/models/current_location_model.dart';
@@ -16,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import '../models/current_user_model.dart';
 import '../store/auth_user.dart';
+import '../widgets.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({Key? key}) : super(key: key);
@@ -32,6 +34,12 @@ class _IndexPageState extends State<IndexPage> {
     Color primary = Colors.indigo;
     CurrentUserModel user = context.watch<AuthenticatedUser>().currentUser;
     CurrentLocation curloc = context.watch<LocationProvider>().currentLocation;
+
+    void initState() {
+      super.initState();
+      print("::App Started::");
+    }
+
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -389,10 +397,12 @@ Widget RecentListings(BuildContext context) {
 
       return InkWell(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FoodDetailView(food_: food)));
+          Future(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FoodDetailView(food_: food)));
+          });
         },
         child: Card(
           elevation: 1,
@@ -403,12 +413,21 @@ Widget RecentListings(BuildContext context) {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(1.0),
-                  child: Image(
+                  child: CachedNetworkImage(
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    height: 110,
+                    imageUrl: image,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                  ),
+
+                  /* Image(
                     image: NetworkImage(image),
                     width: double.infinity,
                     height: 110,
                     fit: BoxFit.cover,
-                  ),
+                  ), */
                 ),
                 Padding(
                     padding: EdgeInsets.fromLTRB(5, 0, 0, 5),

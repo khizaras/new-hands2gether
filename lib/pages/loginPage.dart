@@ -35,7 +35,7 @@ class _SignupPageState extends State<SignupPage> {
 
       if (user.uid != '') {
         Future.delayed(Duration(seconds: 0))
-            .then((value) => Navigator.pushReplacementNamed(context, '/'));
+            .then((value) => Navigator.pushReplacementNamed(context, '/home'));
       }
       if (user.uid != '' && user.active == null) {
         Future.delayed(Duration(seconds: 0)).then(

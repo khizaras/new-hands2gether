@@ -138,6 +138,7 @@ Widget RenderFoodItem(NewFoodModel food, BuildContext context) {
               ),
             ),
             Container(
+              width: width * 0.6,
               alignment: Alignment.topLeft,
               margin: EdgeInsets.fromLTRB(10, 5, 5, 0),
               child: Column(
@@ -146,6 +147,7 @@ Widget RenderFoodItem(NewFoodModel food, BuildContext context) {
                 children: [
                   //title
                   Text(
+                    strutStyle: StrutStyle(fontSize: 8.0),
                     food.title.toString(),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -153,7 +155,8 @@ Widget RenderFoodItem(NewFoodModel food, BuildContext context) {
                   ),
                   //description
                   Text(
-                    food.title.toString(),
+                    strutStyle: StrutStyle(fontSize: 8.0),
+                    food.description.toString(),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -163,7 +166,7 @@ Widget RenderFoodItem(NewFoodModel food, BuildContext context) {
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 5, 0, 10),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Column(
                           children: [

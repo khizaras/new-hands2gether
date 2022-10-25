@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:hands2gether/store/food_provider.dart';
 import 'package:hands2gether/store/location_provider.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:page_transition/page_transition.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +39,7 @@ Future<void> main() async {
     print(e);
   }
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -46,13 +48,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    /* _getCurrentPosition(context).then((position) {
-      double latitude = position[0];
-      double longitude = position[1];
-      _getAddressFromLatLng(latitude, longitude).then((placemark) {
-        print(placemark);
-      });
-    }); */
+    BuildContext pageContext = context;
 
     return MultiProvider(
         providers: [
@@ -75,9 +71,18 @@ class MyApp extends StatelessWidget {
                 visualDensity: VisualDensity.adaptivePlatformDensity,
                 primarySwatch: Colors.indigo,
               ),
-              initialRoute: '/',
+              home: AnimatedSplashScreen(
+                backgroundColor: Colors.white,
+                //backgroundColor: Color.fromRGBO(124, 209, 180, 1),
+                centered: true,
+                splash: splashScreen(0, 0),
+                nextScreen: IndexPage(),
+                splashTransition: SplashTransition.scaleTransition,
+                pageTransitionType: PageTransitionType.rightToLeftWithFade,
+                duration: 3000,
+              ),
               routes: {
-                '/': (context) => IndexPage(),
+                '/home': (context) => IndexPage(),
                 '/food': (context) => FoodListingsPage(),
                 '/signup': (context) => SignupPage(),
                 '/profile': (context) => UpdateProfilePage(),
@@ -161,5 +166,17 @@ Future<List<String>> _getAddressFromLatLng(
   return pos;
 }
 
-  
 //flutter router ?
+
+Widget splashScreen(double height, double width) {
+  return Container(
+    decoration: BoxDecoration(color: Colors.white),
+    alignment: Alignment.center,
+    child: Center(
+      child: Image.asset(
+        'assets/images/logo.png',
+        fit: BoxFit.fill,
+      ),
+    ),
+  );
+}

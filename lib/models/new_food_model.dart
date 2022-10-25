@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 class NewFoodModel {
   final String? title;
   final String? description;
+  final int? helpType;
   final int? foodType;
   final int? quantity;
   final String? images;
@@ -20,13 +21,13 @@ class NewFoodModel {
   final String? userName;
   final String? email;
   final String? mobile;
-  final int? validity;
-  final int? createdEpoch;
-  final DateTime? createdDate;
-
+  final String? validity;
+  final String? createdEpoch;
+  final String? createdDate;
   NewFoodModel({
     this.title,
     this.description,
+    this.helpType,
     this.foodType,
     this.quantity,
     this.images,
@@ -48,6 +49,7 @@ class NewFoodModel {
   NewFoodModel copyWith({
     String? title,
     String? description,
+    int? helpType,
     int? foodType,
     int? quantity,
     String? images,
@@ -61,13 +63,14 @@ class NewFoodModel {
     String? userName,
     String? email,
     String? mobile,
-    int? validity,
-    int? createdEpoch,
-    DateTime? createdDate,
+    String? validity,
+    String? createdEpoch,
+    String? createdDate,
   }) {
     return NewFoodModel(
       title: title ?? this.title,
       description: description ?? this.description,
+      helpType: helpType ?? this.helpType,
       foodType: foodType ?? this.foodType,
       quantity: quantity ?? this.quantity,
       images: images ?? this.images,
@@ -91,6 +94,7 @@ class NewFoodModel {
     return <String, dynamic>{
       'title': title,
       'description': description,
+      'helpType': helpType,
       'foodType': foodType,
       'quantity': quantity,
       'images': images,
@@ -106,7 +110,7 @@ class NewFoodModel {
       'mobile': mobile,
       'validity': validity,
       'createdEpoch': createdEpoch,
-      'createdDate': createdDate?.millisecondsSinceEpoch,
+      'createdDate': createdDate,
     };
   }
 
@@ -115,6 +119,7 @@ class NewFoodModel {
       title: map['title'] != null ? map['title'] as String : null,
       description:
           map['description'] != null ? map['description'] as String : null,
+      helpType: map['helpType'] != null ? map['helpType'] as int : null,
       foodType: map['foodType'] != null ? map['foodType'] as int : null,
       quantity: map['quantity'] != null ? map['quantity'] as int : null,
       images: map['images'] != null ? map['images'] as String : null,
@@ -128,12 +133,11 @@ class NewFoodModel {
       userName: map['userName'] != null ? map['userName'] as String : null,
       email: map['email'] != null ? map['email'] as String : null,
       mobile: map['mobile'] != null ? map['mobile'] as String : null,
-      validity: map['validity'] != null ? map['validity'] as int : null,
+      validity: map['validity'] != null ? map['validity'] as String : null,
       createdEpoch:
-          map['createdEpoch'] != null ? map['createdEpoch'] as int : null,
-      createdDate: map['createdDate'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(map['createdDate'] as int)
-          : null,
+          map['createdEpoch'] != null ? map['createdEpoch'] as String : null,
+      createdDate:
+          map['createdDate'] != null ? map['createdDate'] as String : null,
     );
   }
 
@@ -144,7 +148,7 @@ class NewFoodModel {
 
   @override
   String toString() {
-    return 'NewFoodModel(title: $title, description: $description, foodType: $foodType, quantity: $quantity, images: $images, status: $status, locality: $locality, city: $city, state: $state, country: $country, zipcode: $zipcode, uid: $uid, userName: $userName, email: $email, mobile: $mobile, validity: $validity, createdEpoch: $createdEpoch, createdDate: $createdDate)';
+    return 'NewFoodModel(title: $title, description: $description, helpType: $helpType, foodType: $foodType, quantity: $quantity, images: $images, status: $status, locality: $locality, city: $city, state: $state, country: $country, zipcode: $zipcode, uid: $uid, userName: $userName, email: $email, mobile: $mobile, validity: $validity, createdEpoch: $createdEpoch, createdDate: $createdDate)';
   }
 
   @override
@@ -153,6 +157,7 @@ class NewFoodModel {
 
     return other.title == title &&
         other.description == description &&
+        other.helpType == helpType &&
         other.foodType == foodType &&
         other.quantity == quantity &&
         other.images == images &&
@@ -175,6 +180,7 @@ class NewFoodModel {
   int get hashCode {
     return title.hashCode ^
         description.hashCode ^
+        helpType.hashCode ^
         foodType.hashCode ^
         quantity.hashCode ^
         images.hashCode ^
