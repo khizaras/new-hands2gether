@@ -9,6 +9,8 @@ import 'package:hands2gether/store/food_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:ribbon_widget/ribbon_widget.dart';
 
+import 'food_detail_view.dart';
+
 class FoodListingsPage extends StatefulWidget {
   const FoodListingsPage({Key? key}) : super(key: key);
 
@@ -123,128 +125,139 @@ Widget RenderFoodItem(NewFoodModel food, BuildContext context) {
         color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
     color: Colors.indigoAccent,
     location: RibbonLocation.topEnd,
-    child: Card(
-      elevation: 0.7,
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: width * 0.3,
-              child: Image.network(
-                images[0],
-                height: height * .12,
-                fit: BoxFit.cover,
+    child: InkWell(
+      onTap: () {
+        Future(() {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FoodDetailView(food_: food)));
+        });
+      },
+      child: Card(
+        elevation: 0.7,
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: width * 0.3,
+                child: Image.network(
+                  images[0],
+                  height: height * .12,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            Container(
-              width: width * 0.6,
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.fromLTRB(10, 5, 5, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //title
-                  Text(
-                    strutStyle: StrutStyle(fontSize: 8.0),
-                    food.title.toString(),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(color: Color.fromARGB(255, 100, 100, 100)),
-                  ),
-                  //description
-                  Text(
-                    strutStyle: StrutStyle(fontSize: 8.0),
-                    food.description.toString(),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        color: Color.fromARGB(255, 100, 100, 100),
-                        fontSize: 10),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 5, 0, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              "Food Type",
-                              style: TextStyle(color: primary, fontSize: 10),
-                            ),
-                            Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                    color: primary,
-                                    border: Border.all(
-                                      color: Colors.indigo,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: Text(
-                                  "Vegetrian",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10),
-                                ))
-                          ],
-                        ),
-                        Divider(
-                          indent: 10,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "Quantity",
-                              style: TextStyle(color: primary, fontSize: 10),
-                            ),
-                            Container(
-                                padding: EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                    color: primary,
-                                    border: Border.all(
-                                      color: Colors.indigo,
-                                    ),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: Text(
-                                  "45",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 10),
-                                ))
-                          ],
-                        ),
-                        Divider(
-                          indent: 10,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "Loication",
-                              style: TextStyle(color: primary, fontSize: 8),
-                            ),
-                            Row(
-                              children: [
-                                Icon(Icons.map_outlined),
-                                Text(
-                                  "${food.locality ?? food.city}",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style:
-                                      TextStyle(color: primary, fontSize: 10),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      ],
+              Container(
+                width: width * 0.6,
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.fromLTRB(10, 5, 5, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //title
+                    Text(
+                      strutStyle: StrutStyle(fontSize: 8.0),
+                      food.title.toString(),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 100, 100, 100)),
                     ),
-                  ),
-                ],
-              ),
-            )
-          ]),
+                    //description
+                    Text(
+                      strutStyle: StrutStyle(fontSize: 8.0),
+                      food.description.toString(),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 100, 100, 100),
+                          fontSize: 10),
+                    ),
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, 5, 0, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                "Food Type",
+                                style: TextStyle(color: primary, fontSize: 10),
+                              ),
+                              Container(
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      color: primary,
+                                      border: Border.all(
+                                        color: Colors.indigo,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Text(
+                                    "Vegetrian",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ))
+                            ],
+                          ),
+                          Divider(
+                            indent: 10,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "Quantity",
+                                style: TextStyle(color: primary, fontSize: 10),
+                              ),
+                              Container(
+                                  padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      color: primary,
+                                      border: Border.all(
+                                        color: Colors.indigo,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Text(
+                                    "45",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 10),
+                                  ))
+                            ],
+                          ),
+                          Divider(
+                            indent: 10,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "Loication",
+                                style: TextStyle(color: primary, fontSize: 8),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(Icons.map_outlined),
+                                  Text(
+                                    "${food.locality ?? food.city}",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style:
+                                        TextStyle(color: primary, fontSize: 10),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ]),
+      ),
     ),
   );
 }

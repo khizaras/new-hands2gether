@@ -13,6 +13,7 @@ import 'package:hands2gether/pages/food_listings.dart';
 import 'package:hands2gether/pages/indexPage.dart';
 import 'package:hands2gether/pages/loginPage.dart';
 import 'package:hands2gether/pages/profile.dart';
+import 'package:hands2gether/pages/signup.dart';
 import 'package:hands2gether/store/auth_user.dart';
 import 'package:hands2gether/store/food_provider.dart';
 import 'package:hands2gether/store/location_provider.dart';
@@ -33,7 +34,7 @@ Future<void> main() async {
   try {
     FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8500);
     await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    //await FirebaseAuth.instance.signInAnonymously();
+    await FirebaseAuth.instance.signInAnonymously();
   } catch (e) {
     // ignore: avoid_print
     print(e);
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
                 '/home': (context) => IndexPage(),
                 '/food': (context) => FoodListingsPage(),
                 '/signup': (context) => SignupPage(),
+                '/create-user': (context) => userSignup(),
                 '/profile': (context) => UpdateProfilePage(),
               });
         }));
@@ -127,6 +129,7 @@ Future<List<double>> _getCurrentPosition(BuildContext context) async {
   Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
   if (!hasPermission) throw "No permission";
+
   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
       .then((Position position) {
     pos.add(position.latitude);
@@ -169,14 +172,14 @@ Future<List<String>> _getAddressFromLatLng(
 //flutter router ?
 
 Widget splashScreen(double height, double width) {
-  return Container(
-    decoration: BoxDecoration(color: Colors.white),
-    alignment: Alignment.center,
-    child: Center(
-      child: Image.asset(
-        'assets/images/logo.png',
-        fit: BoxFit.fill,
-      ),
+ return Container(
+    height: height,
+    width: width,
+    child: Image.asset(
+      'assets/images/logo.png',
+      fit: BoxFit.cover,
     ),
   );
+
+
 }
